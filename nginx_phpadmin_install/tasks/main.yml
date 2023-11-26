@@ -1,0 +1,77 @@
+---
+# tasks file for nginx_phpadmin_install
+  - name: Install Nginx + php
+    apt:
+      name: "{{ item }}"
+      state: latest
+    loop:
+          - nginx
+          - php-fpm
+          - mysql-server
+          - python3-pip
+
+  - name: install pymysql
+    pip:
+      name: pymysql
+      state: present
+
+  - name: start mysql
+    shell: "service mysql start"
+
+  - name: ensure mysql is enabled
+    service:
+      name: mysql
+      state: started
+      enabled: true
+
+  - name: make user
+    mysql_user:
+      name: test
+      login_unix_socket: /var/run/mysqld/mysqld.sock
+      host: 'localhost"
+      password: "{{ db_pass }}"
+      priv: "*.*:ALL,GRANT"
+      login_user: test
+      login_password: "{{ db_pass }}"
+      check_implicit_admin: yes
+
+  - name: create db
+    mysql_db:
+      name: testdb
+      state: present
+      login_user: test
+      login_password: "{{ db_pass }}"
+
+  - name: add sample data to db
+    copy:
+      src: dump.sql
+      dest: /tmp/dump.sql
+
+  - name: insert data into db
+    mysql_db:
+      name: testdb
+      state: import
+      target: /tmp/dump.sql
+      login_user: test
+      login_password: "{{ db_pass }}"
+
+  - name: replace pma.conf in sites-availbale
+    copy:
+      src: phpmyadmin.j2
+      dest: "{{defdir}}"
+      mode: 0644
+
+  - name: delete default conf
+    file:
+      path: "{{defconf}}"
+      state: absent
+
+  - name: set pma.conf as default
+    command: ln -s "{{newconfig }}" "{{ defconf }}"
+    notify: restart nginx
+
+  - name: install pma
+    apt:
+      name: phpmyadmin
+      state: latest
+    notify: restart nginx

@@ -1,0 +1,9 @@
+---
+# vars file for nginx_phpadmin_install
+defdir: /etc/nginx/sites-available/
+defconf: /etc/nginx/sites-available/default
+newconfig: /etc/nginx/sites-available/phpmyadmin.j2
+external_ip: "{{ansible_facts['ansible_default_ipv4']['address'] }}"
+mysql_datadir: /var/lib/mysql
+db_pass:
+ansible_python_interpreter: /usr/bin/python3

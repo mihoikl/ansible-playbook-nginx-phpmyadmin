@@ -1,0 +1,9 @@
+
+---
+- name: Install nginx and pma
+  hosts: test
+  become: yes
+  become_method: sudo
+
+  roles:
+  - nginx_phpadmin_install
