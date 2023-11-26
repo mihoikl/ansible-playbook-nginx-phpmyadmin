@@ -17,12 +17,13 @@ Ansible установлен на машине, с которой вы буде�
 Пример:
 
 [web_servers]
+
 server1 ansible_ssh_host=your_server1_ip ansible_ssh_user=your_ssh_user ansible_ssh_private_key_file=/path/to/your/private_key
+
 server2 ansible_ssh_host=your_server2_ip ansible_ssh_user=your_ssh_user ansible_ssh_private_key_file=/path/to/your/private_key
+
 Замените your_server1_ip, your_server2_ip, your_ssh_user и /path/to/your/private_key на соответствующие значения для ваших серверов и настроек SSH.
 
-
-Измените переменные, такие как defdir, defconf, newconfig и db_pass в файле playbook'а в соответствии с вашими требованиями.
 Убедитесь, что файл шаблона phpmyadmin.j2 и файл дампа SQL dump.sql доступны по указанным путям.
 Запустите Ansible playbook:
 
